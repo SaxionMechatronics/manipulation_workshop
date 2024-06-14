@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="staubli_tx200">
+  <!-- arm_id: Namespace of the TX200 arm. Serves to differentiate between arms in case of multiple instances. 
+      connected_to: parent link the robot is connected to
+      xyz, rpy: origin of robot w.r.t. parent link 
+  -->
+  <xacro:macro name="tx200_arm" params="arm_id:='staubli_tx200' description_pkg:='staubli_tx200_description' connected_to:='' xyz:='0 0 0' rpy:='0 0 0'">
+    <xacro:unless value="${not connected_to}">
+      <joint name="${arm_id}_joint_${connected_to}" type="fixed">
+        <parent link="${connected_to}"/>
+        <child link="${arm_id}_base_link"/>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+      </joint>
+    </xacro:unless>
+    
+    <material name="yellow">
+          <color rgba="1 0.884 0.438 1" />
+    </material>
+
+    <material name="grey">
+        <color
+          rgba="0.75686 0.76863 0.75294 1" />
+      </material>
+
+    <xacro:macro name="m_link" params="name xyz:='0 0 0' rpy='0 0 0' mesh collis_xyx:='0 0 0' collis_rpy:='0 0 0' collis_mesh material_name">
+      <link name="${name}">
+        <visual>
+        <origin
+            xyz="${xyz}"
+            rpy="${rpy}" /> 
+          <geometry>
+            <mesh filename="${mesh}" />
+          </geometry> 
+          <material name="${material_name}" />
+        </visual>
+        <collision>
+          <origin
+            xyz="${collis_xyx}"
+            rpy="${collis_rpy}" />
+          <geometry>
+            <mesh
+              filename="${collis_mesh}" />
+          </geometry>
+        </collision> 
+      </link>
+	</xacro:macro>
+
+  <xacro:m_link name="${arm_id}_base_link" 
+    mesh="package://${description_pkg}/meshes/visual/base_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/base_link.STL"
+    material_name="yellow" />
+  
+  <xacro:m_link name="${arm_id}_shoulder_link" 
+    mesh="package://${description_pkg}/meshes/visual/shoulder_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/shoulder_link.STL"
+    material_name="yellow" />
+
+  <xacro:m_link name="${arm_id}_upper_arm_link" 
+    mesh="package://${description_pkg}/meshes/visual/upper_arm_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/upper_arm_link.STL"
+    material_name="yellow" />
+
+  <xacro:m_link name="${arm_id}_elbow_link" 
+    mesh="package://${description_pkg}/meshes/visual/elbow_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/elbow_link.STL"
+    material_name="yellow" />
+  
+  
+  <xacro:m_link name="${arm_id}_forearm_link" 
+    mesh="package://${description_pkg}/meshes/visual/forearm_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/forearm_link.STL"
+    material_name="yellow" />
+  
+  
+   <xacro:m_link name="${arm_id}_wrist_link" 
+    mesh="package://${description_pkg}/meshes/visual/wrist_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/wrist_link.STL"
+    material_name="yellow" />
+  
+  
+   <xacro:m_link name="${arm_id}_tool_flange_link" 
+    mesh="package://${description_pkg}/meshes/visual/tool_flange_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/tool_flange_link.STL"
+    material_name="grey" />
+
+   <xacro:m_link name="${arm_id}_magnet_base_link" 
+    mesh="package://${description_pkg}/meshes/visual/magnet_base_link.STL" 
+    collis_mesh="package://${description_pkg}/meshes/collision/magnet_base_link.STL"
+    material_name="grey" />
+
+   <xacro:m_link name="${arm_id}_magnet_link" 
+    mesh="package://${description_pkg}/meshes/visual/magnet_link.STL"
+    collis_mesh="package://${description_pkg}/meshes/collision/magnet_link.STL"
+    material_name="grey" />
+
+    <joint
+      name="${arm_id}_axis1_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.642"
+        rpy="0 0 0" />
+      <parent
+        link="${arm_id}_base_link" />
+      <child
+        link="${arm_id}_shoulder_link" />
+      <axis
+        xyz="0 0 -1" />
+      <limit
+        lower="0"
+        upper="6.283186"
+        effort="1"
+        velocity="2.79" /> 
+    </joint>
+
+    
+    <joint
+      name="${arm_id}_axis2_joint"
+      type="revolute">
+      <origin
+        xyz="0.25 0 0"
+        rpy="-1.5708 0 0" />
+      <parent
+        link="${arm_id}_shoulder_link" />
+      <child
+        link="${arm_id}_upper_arm_link" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-0.785"
+        upper="2.094395"
+        effort="0"
+        velocity="2.79" />
+    </joint>
+
+
+    <joint
+      name="${arm_id}_axis3_joint"
+      type="revolute">
+      <origin
+        xyz="0 -0.95 0"
+        rpy="0 0 0" />
+      <parent
+        link="${arm_id}_upper_arm_link" />
+      <child
+        link="${arm_id}_elbow_link" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-2.44346"
+        upper="2.530727"
+        effort="1"
+        velocity="2.79" />
+    </joint>
+
+    
+
+    <joint
+      name="${arm_id}_axis4_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="1.5708 0 0" />
+      <parent
+        link="${arm_id}_elbow_link" />
+      <child
+        link="${arm_id}_forearm_link" />
+      <axis
+        xyz="0 0 -1" />
+      <limit
+        lower="-3.1415"
+        upper="3.1415"
+        effort="0"
+        velocity="4.537" />
+    </joint>
+
+   
+    <joint
+      name="${arm_id}_axis5_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.8"
+        rpy="-1.5708 0 0" />
+      <parent
+        link="${arm_id}_forearm_link" />
+      <child
+        link="${arm_id}_wrist_link" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-2.0943"
+        upper="2.0943"
+        effort="0"
+        velocity="4.5379" />
+    </joint>
+
+
+    <joint name="${arm_id}_axis6_joint"
+      type="revolute">
+      <origin
+        xyz="0 -0.194 0"
+        rpy="1.5708 0 0" />
+      <parent
+        link="${arm_id}_wrist_link" />
+      <child
+        link="${arm_id}_tool_flange_link" />
+      <axis
+        xyz="0 0 1" />
+      <limit
+        lower="-3.1415"
+        upper="3.1415"
+        effort="1"
+        velocity="6.98" />
+    </joint>
+
+    <joint name="${arm_id}_tool_joint"
+      type="fixed">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <parent
+        link="${arm_id}_tool_flange_link" />
+      <child
+        link="${arm_id}_magnet_base_link" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+
+    <joint
+      name="${arm_id}_magnet_joint"
+      type="fixed">
+      <origin
+        xyz="0 0.15975 0.35289"
+        rpy="0.69813 0 0" />
+      <parent
+        link="${arm_id}_magnet_base_link" />
+      <child
+        link="${arm_id}_magnet_link" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+
+    <ros2_control name="${arm_id}_controller" type="system">
+      <hardware>
+        <plugin>fake_components/GenericSystem</plugin>
+      </hardware>
+      <joint name="${arm_id}_axis1_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="${arm_id}_axis2_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="${arm_id}_axis3_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="${arm_id}_axis4_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="${arm_id}_axis5_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="${arm_id}_axis6_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </ros2_control>
+  </xacro:macro>
+
+</robot>

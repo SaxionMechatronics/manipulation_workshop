@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="staubli_workcell">
+    <xacro:arg name="handling_arm_id" default="tx200" />
+    <xacro:include filename="$(find staubli_tx200_description)/urdf/staubli_tx200_description.xacro" />
+    <xacro:include filename="workcell-colors.urdf.xacro" />
+    <xacro:include filename="beam.urdf.xacro" />
+
+    <link name="root_link"/>
+   
+    <link
+    name="plate_base">
+    <geometry>
+      <box size="0.5 0.5 0.5" />
+    </geometry>
+    <visual>       
+      <geometry>
+        <box size="0.5 0.5 0.470" />
+      </geometry>
+      <xacro:color_fab_grey/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+     <geometry>
+       <box size="0.5 0.5 0.5" />
+      </geometry>
+    </collision>   
+  </link>
+
+  <link
+    name="plate_goal">
+    <geometry>
+      <box size="0.5 0.5 0.5" />
+    </geometry>
+    <visual>       
+      <geometry>
+        <box size="0.5 0.5 0.470" />
+      </geometry>
+      <xacro:color_fab_grey/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+     <geometry>
+       <box size="0.5 0.5 0.5" />
+      </geometry>
+    </collision>   
+  </link>
+
+   <joint
+    name="plate_base_joint"
+    type="fixed">
+    <origin
+      xyz="0.5 -1.5 0.25"
+      rpy="0 0 0" />
+    <parent
+      link="root_link" />
+    <child
+      link="plate_base" />
+    <axis
+      xyz="0 0 1" />
+  </joint>  
+   
+  <joint
+    name="plate_goal_joint"
+    type="fixed">
+    <origin
+      xyz="-0.5 -1.5 0.25"
+      rpy="0 0 0" />
+    <parent
+      link="root_link" />
+    <child
+      link="plate_goal" />
+    <axis
+      xyz="0 0 1" />
+  </joint> 
+
+  <xacro:tx200_arm arm_id="$(arg handling_arm_id)" connected_to="root_link"/>
+
+</robot>

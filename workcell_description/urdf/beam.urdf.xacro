@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<robot name="beam" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="workcell-colors.urdf.xacro" />
+    <xacro:macro name="beam" params="beam_id:='beam' height:=200 width:=200 flange:=10 web:=10 length:=12000 connected_to:=''">
+        <xacro:unless value="${not connected_to}">
+        <joint name="${beam_id}_rotator_joint" type="fixed">
+            <origin rpy="0 0 0" xyz="${-0.265+width/2000} ${length/2000} -0.209"/>
+            <parent link="${connected_to}"/>
+            <child link="${beam_id}_lower_flange"/>
+        </joint>
+        </xacro:unless>
+
+        <link name="${beam_id}_lower_flange">
+            <visual>
+                <origin
+                    xyz="0 0 ${flange/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${width/1000} ${length/1000} ${flange/1000}"/>
+                </geometry>
+                <xacro:color_beam_grey/>
+            </visual>
+            <collision>
+                <origin
+                    xyz="0 0 ${flange/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${width/1000} ${length/1000} ${flange/1000}"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="${beam_id}_upper_flange">
+            <visual>
+                <origin
+                    xyz="0 0 -${flange/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${width/1000} ${length/1000} ${flange/1000}"/>
+                </geometry>
+                <xacro:color_beam_grey/>
+            </visual>
+            <collision>
+                <origin
+                    xyz="0 0 -${flange/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${width/1000} ${length/1000} ${flange/1000}"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="${beam_id}_web">
+            <visual>
+                <origin
+                    xyz="0 0 -${web/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${(height-2*flange)/1000} ${length/1000} ${web/1000}"/>
+                </geometry>
+                <xacro:color_beam_grey/>
+            </visual>
+            <collision>
+                <origin
+                    xyz="0 0 -${web/2000}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${(height-2*flange)/1000} ${length/1000} ${web/1000}"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${beam_id}_lower_joint" type="fixed">
+            <parent link="${beam_id}_lower_flange"/>
+            <child link="${beam_id}_web"/> 
+            <origin xyz="0 0 ${(height)/2000}" rpy="0 -1.5708 0" />
+        </joint>
+        
+        <joint name="${beam_id}_upper_joint" type="fixed">
+            <parent link="${beam_id}_web"/>
+            <child link="${beam_id}_upper_flange"/>
+            <origin xyz="${(height)/2000} 0 -${web/2000}" rpy="0 1.5708 0" />
+        </joint>
+    </xacro:macro>
+</robot>

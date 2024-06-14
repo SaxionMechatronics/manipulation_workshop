@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="staubli_tx200">
+    <xacro:arg name="arm_id" default="tx200" />
+    <xacro:include filename="$(find staubli_tx200_description)/urdf/staubli_tx200_description.xacro" />
+
+    <link name="root_link"/>
+    
+    <xacro:tx200_arm arm_id="$(arg arm_id)" connected_to="root_link" />
+</robot>
